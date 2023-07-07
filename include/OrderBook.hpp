@@ -31,6 +31,7 @@ namespace jvn
             limit_type limit;
             quantity_type quantity;
         };
+        inline friend std::ostream& operator<<(std::ostream& os, const Match& match);
 
         template <class Map, class Iter>
         Match match(Order* order, Map& map, Iter& iter);

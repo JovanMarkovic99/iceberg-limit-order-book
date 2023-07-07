@@ -49,7 +49,7 @@ namespace jvn
         quantity_type matching_order_volume = matching_order->getVolume();
 
         // Exhausted match
-        if (map.key_comp()(matching_order_volume, order->quantity) || matching_order_volume == order->quantity) {
+        if (map.key_comp()(order->quantity, matching_order_volume) || matching_order_volume == order->quantity) {
             order->quantity -= matching_order_volume;
             matching_order->quantity -= matching_order_volume;
 
@@ -113,6 +113,10 @@ namespace jvn
 
     void OrderBook::sendMessages(const std::vector<OrderBook::Match>& matches) const {
         for (Match match: matches)
-            std::cout << match.buy_id << ',' << match.sell_id << ',' << match.limit << ',' << match.quantity << '\n';
+            std::cout << match << '\n';
+    }
+
+    std::ostream& operator<<(std::ostream& os, const OrderBook::Match& match) {
+        return os << match.buy_id << ',' << match.sell_id << ',' << match.limit << ',' << match.quantity;
     }
 }

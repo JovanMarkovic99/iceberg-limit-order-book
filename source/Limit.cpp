@@ -60,4 +60,12 @@ namespace jvn
     Limit::iterator Limit::end() noexcept {
         return m_orders.end();
     }
+
+    Limit::const_iterator Limit::begin() const noexcept {
+        return m_orders.begin();
+    }
+
+    Limit::const_iterator Limit::end() const noexcept {
+        return m_orders.end();
+    }
 }

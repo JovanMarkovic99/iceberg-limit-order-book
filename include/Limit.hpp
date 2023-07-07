@@ -11,6 +11,7 @@ namespace jvn
         using limit_type = Order::limit_type;
         using list_type = std::deque<std::unique_ptr<Order>>;
         using iterator = list_type::iterator;
+        using const_iterator = list_type::const_iterator;
 
         limit_type limit_price;
 
@@ -26,6 +27,9 @@ namespace jvn
     
         iterator begin() noexcept;
         iterator end() noexcept;
+
+        const_iterator begin() const noexcept;
+        const_iterator end() const noexcept;
     private:
         list_type m_orders;
     };
