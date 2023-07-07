@@ -25,12 +25,17 @@ namespace jvn
             SectionInfo section_info = table_sections[section_idx < table_sections.size() ? section_idx : 2 * table_sections.size() - section_idx - 1];
             printTextSection(section_info.text, section_info.width, SEPARATOR_CHAR, VERTICAL_EDGE_CHAR);
         }
-
         std::cout << VERTICAL_EDGE_CHAR << '\n';
     }
 
     // TODO: Further refactor
     void OrderBookPrinter::printOrders(const OrderBook& order_book) {
+        for (size_t section_idx = 0; section_idx < 2 * table_sections.size(); ++section_idx) {
+            SectionInfo section_info = table_sections[section_idx < table_sections.size() ? section_idx : 2 * table_sections.size() - section_idx - 1];
+            printTextSection("", section_info.width, HORIZONTAL_EDGE_CHAR, CORNER_CHAR);
+        }
+        std::cout << CORNER_CHAR << '\n';
+
         std::cout << std::right;
 
         auto buy_map_iter = order_book.m_buy_map.begin();
