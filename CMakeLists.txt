@@ -35,5 +35,5 @@ enable_testing()
 include(GoogleTest)
 add_subdirectory(tests)
 
-add_executable(main.out source/main.cpp)
-target_link_libraries(main.out LOB_Library)
+add_executable(main source/main.cpp)
+target_link_libraries(main LOB_Library)

@@ -8,10 +8,10 @@
 namespace jvn
 {
     OrderBook::OrderBook()
-        :m_buy_map(), 
-        m_sell_map(), 
-        m_highest_buy(m_buy_map.end()), 
-        m_lowest_sell(m_sell_map.end())
+        :m_sell_map(), 
+        m_buy_map(), 
+        m_lowest_sell(m_sell_map.end()),
+        m_highest_buy(m_buy_map.end())
         {}
 
     void OrderBook::processOrder(std::unique_ptr<Order> order) {
