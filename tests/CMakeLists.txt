@@ -5,6 +5,7 @@ set(This UnitTests)
 set(Sources
     OrderTest.cpp
     LimitTest.cpp
+    OrderBookTest.cpp
 )
 
 add_executable(${This} ${Sources})

@@ -119,9 +119,8 @@ namespace jvn
     std::string OrderBookPrinter::intToText(int num, bool format) {
         std::stringstream ss;
         if (format)
-            ss << std::put_money(num);
-        else
-            ss << num;
+            ss.imbue(std::locale(ss.getloc(), new comma_three_digit_sep()));
+        ss << num;
         return ss.str();
     }
 

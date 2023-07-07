@@ -4,6 +4,7 @@
 #include <functional>
 #include <string_view>
 #include <array>
+#include <locale>
 
 namespace jvn 
 {
@@ -36,6 +37,11 @@ namespace jvn
             {" Volume ", VOLUME_COLUMN_WIDTH, [](const Order* order){ return int(order->getVolume()); }, true},
             {" Price ", PRICE_COLUMN_WIDTH, [](const Order* order){ return int(order->limit); }, true}
         }};
+
+        struct comma_three_digit_sep: public std::numpunct<char> {
+            virtual std::string do_grouping() const { return "\003"; }
+            virtual char do_thousands_sep() const { return ','; }
+        };
 
         static void printHeader();
         static void printOrders(const OrderBook& order_book);

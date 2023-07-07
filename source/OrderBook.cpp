@@ -49,7 +49,7 @@ namespace jvn
         quantity_type matching_order_volume = matching_order->getVolume();
 
         // Exhausted match
-        if (map.key_comp()(order->quantity, matching_order_volume) || matching_order_volume == order->quantity) {
+        if (map.key_comp()(matching_order_volume, order->quantity) || matching_order_volume == order->quantity) {
             order->quantity -= matching_order_volume;
             matching_order->quantity -= matching_order_volume;
 
