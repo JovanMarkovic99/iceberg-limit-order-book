@@ -1,8 +1,6 @@
 
 #include "../include/OrderBook.hpp"
-#include <vector>
 #include <utility>
-#include <iostream>
 #include <sstream>
 
 namespace jvn

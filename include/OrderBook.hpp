@@ -4,6 +4,7 @@
 #include <memory>
 #include <map>
 #include <vector>
+#include <iostream>
 
 namespace jvn 
 {
