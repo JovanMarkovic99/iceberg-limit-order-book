@@ -22,7 +22,7 @@ namespace jvn
 
         std::vector<Match> matches;
         if (order->order_type == OrderType::BUY) {
-            while (order->quantity > 0 && m_lowest_sell != m_sell_map.end() && m_lowest_sell->first >= order->limit) 
+            while (order->quantity > 0 && m_lowest_sell != m_sell_map.end() && order->limit >= m_lowest_sell->first)
                 matches.emplace_back(match(order.get(), m_sell_map, m_lowest_sell));
             
             mergeIcebergMatches<OrderType::BUY>(matches);
@@ -30,7 +30,7 @@ namespace jvn
             if (order->quantity > 0)
                 add(std::move(order), m_buy_map, m_highest_buy);
         } else {
-            while (order->quantity > 0 && m_highest_buy != m_buy_map.end() && m_highest_buy->first <= order->limit)
+            while (order->quantity > 0 && m_highest_buy != m_buy_map.end() && order->limit <= m_highest_buy->first)
                 matches.emplace_back(match(order.get(), m_buy_map, m_highest_buy));
 
             mergeIcebergMatches<OrderType::SELL>(matches);
@@ -49,7 +49,7 @@ namespace jvn
         quantity_type matching_order_volume = matching_order->getVolume();
 
         // Exhausted match
-        if (map.key_comp()(matching_order_volume, order->quantity) || matching_order_volume == order->quantity) {
+        if (matching_order_volume <= order->quantity) {
             order->quantity -= matching_order_volume;
             matching_order->quantity -= matching_order_volume;
 
