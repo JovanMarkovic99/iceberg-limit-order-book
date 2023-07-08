@@ -83,7 +83,49 @@ TEST_F(OrderBookFixture, SimpleExample1) {
     );
 }
 
-TEST_F(OrderBookFixture, ComplexExampl1) {
+TEST_F(OrderBookFixture, SimpleExample2) {
+    book.processOrder(std::unique_ptr<Order>(new Order(OrderType::BUY, 1, 10, 10)));
+    OrderBookPrinter::print(book);
+
+    EXPECT_TRUE(buffer.str() ==
+    "+-----------------------------------------------------------------+\n"
+    "| BUY                            | SELL                           |\n"
+    "| Id       | Volume      | Price | Price | Volume      | Id       |\n"
+    "+----------+-------------+-------+-------+-------------+----------+\n"
+    "|         1|           10|     10|       |             |          |\n"
+    "+-----------------------------------------------------------------+\n"
+    );
+    buffer.str("");
+
+    book.processOrder(std::unique_ptr<Order>(new Order(OrderType::BUY, 2, 11, 10)));
+    OrderBookPrinter::print(book);
+
+    EXPECT_TRUE(buffer.str() ==
+    "+-----------------------------------------------------------------+\n"
+    "| BUY                            | SELL                           |\n"
+    "| Id       | Volume      | Price | Price | Volume      | Id       |\n"
+    "+----------+-------------+-------+-------+-------------+----------+\n"
+    "|         2|           10|     11|       |             |          |\n"
+    "|         1|           10|     10|       |             |          |\n"
+    "+-----------------------------------------------------------------+\n"
+    );
+    buffer.str("");
+
+    book.processOrder(std::unique_ptr<Order>(new Order(OrderType::SELL, 3, 9, 20)));
+    OrderBookPrinter::print(book);
+
+    EXPECT_TRUE(buffer.str() ==
+    "2,3,9,10\n"
+    "1,3,9,10\n"
+    "+-----------------------------------------------------------------+\n"
+    "| BUY                            | SELL                           |\n"
+    "| Id       | Volume      | Price | Price | Volume      | Id       |\n"
+    "+----------+-------------+-------+-------+-------------+----------+\n"
+    "+-----------------------------------------------------------------+\n"
+    );
+}
+
+TEST_F(OrderBookFixture, ComplexExample1) {
     book.processOrder(std::unique_ptr<Order>(new IcebergOrder(OrderType::SELL, 1, 100, 50, 10)));
     OrderBookPrinter::print(book);
     book.processOrder(std::unique_ptr<Order>(new Order(OrderType::SELL, 2, 100, 10)));
