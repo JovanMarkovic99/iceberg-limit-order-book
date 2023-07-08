@@ -24,7 +24,7 @@ namespace jvn
         static constexpr const char SEPARATOR_CHAR = ' ';
 
         using order_member_getter = int(*)(const Order*);
-
+        
         struct SectionInfo {
             std::string_view text;
             int width;
@@ -33,15 +33,10 @@ namespace jvn
         };
 
         static constexpr const std::array<SectionInfo, 3> table_sections = {{
-            {" Id ", ID_COLUMN_WIDTH, [](const Order* order){ return int(order->id); }, false},
-            {" Volume ", VOLUME_COLUMN_WIDTH, [](const Order* order){ return int(order->getVolume()); }, true},
-            {" Price ", PRICE_COLUMN_WIDTH, [](const Order* order){ return int(order->limit); }, true}
+            {" Id ", ID_COLUMN_WIDTH, [](const Order* order){ return static_cast<int>(order->id); }, false},
+            {" Volume ", VOLUME_COLUMN_WIDTH, [](const Order* order){ return static_cast<int>(order->getVolume()); }, true},
+            {" Price ", PRICE_COLUMN_WIDTH, [](const Order* order){ return static_cast<int>(order->limit); }, true}
         }};
-
-        struct comma_three_digit_sep: public std::numpunct<char> {
-            virtual std::string do_grouping() const { return "\003"; }
-            virtual char do_thousands_sep() const { return ','; }
-        };
 
         static void printHeader();
         static void printOrders(const OrderBook& order_book);
@@ -50,7 +45,13 @@ namespace jvn
         static void printOrder(const Order* order);
         template <bool Inverse>
         static void printEmptyOrder();
-        static std::string intToText(int num, bool format);
+
+        struct comma_three_digit_sep: public std::numpunct<char> {
+            virtual std::string do_grouping() const { return "\003"; }
+            virtual char do_thousands_sep() const { return ','; }
+        };
+
+        [[nodiscard]] static std::string intToText(int num, bool format);
 
         static void printTextSection(std::string_view text, int width, char fill_char, char prefix = '\0', char suffix = '\0', bool end_line = false);
     };

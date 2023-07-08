@@ -1,6 +1,7 @@
 
 #include "../include/OrderBookPrinter.hpp"
 #include <iostream>
+#include <sstream>
 #include <iomanip>
 
 namespace jvn 
@@ -30,13 +31,14 @@ namespace jvn
 
     // TODO: Further refactor
     void OrderBookPrinter::printOrders(const OrderBook& order_book) {
+        std::cout << std::right;
+
+        // +----------+-------------+-------+-------+-------------+----------+
         for (size_t section_idx = 0; section_idx < 2 * table_sections.size(); ++section_idx) {
             SectionInfo section_info = table_sections[section_idx < table_sections.size() ? section_idx : 2 * table_sections.size() - section_idx - 1];
             printTextSection("", section_info.width, HORIZONTAL_EDGE_CHAR, CORNER_CHAR);
         }
         std::cout << CORNER_CHAR << '\n';
-
-        std::cout << std::right;
 
         auto buy_map_iter = order_book.m_buy_map.begin();
         auto sell_map_iter = order_book.m_sell_map.begin();
@@ -52,6 +54,7 @@ namespace jvn
         if (!done_sell())
             sell_limit_iter = sell_map_iter->second.begin();
 
+        // Necessary evil due to different iterator types
         auto advance_buy_iter_pair = [&]() {
             ++buy_limit_iter;
             if (buy_limit_iter == buy_map_iter->second.end()) {
@@ -60,7 +63,6 @@ namespace jvn
                     buy_limit_iter = buy_map_iter->second.begin();
             }
         };
-
         auto advance_sell_iter_pair = [&]() {
             ++sell_limit_iter;
             if (sell_limit_iter == sell_map_iter->second.end()) {
@@ -116,6 +118,7 @@ namespace jvn
                 printTextSection("", section_info_iter->width, SEPARATOR_CHAR, VERTICAL_EDGE_CHAR);
     }
 
+    // There might be a better way to achive this
     std::string OrderBookPrinter::intToText(int num, bool format) {
         std::stringstream ss;
         if (format)
@@ -123,7 +126,6 @@ namespace jvn
         ss << num;
         return ss.str();
     }
-
 
     void OrderBookPrinter::printTextSection(std::string_view text, int width, char fill_char, char prefix, char suffix, bool end_line) {
         if (prefix != '\0')

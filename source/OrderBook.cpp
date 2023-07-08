@@ -68,14 +68,15 @@ namespace jvn
 
         }
 
-        matching_order->quantity -= order->quantity;
+        quantity_type old_order_quantity = std::exchange(order->quantity, 0);
+        matching_order->quantity -= old_order_quantity;
 
         match_iter->second.pushFront(std::move(matching_order));
 
         if constexpr(std::is_same_v<Map, OrderBook::buy_map_type>)
-            return Match{matching_order_id, order->id, order->limit, std::exchange(order->quantity, 0)};
+            return Match{matching_order_id, order->id, order->limit, old_order_quantity};
         else
-            return Match{order->id, matching_order_id, match_iter->first, std::exchange(order->quantity, 0)};
+            return Match{order->id, matching_order_id, match_iter->first, old_order_quantity};
     };
 
     template <OrderType Ty>
@@ -83,20 +84,19 @@ namespace jvn
         if (!matches.size())
             return;
 
+        auto id_match = [](const Match& m1, const Match& m2) {
+            if constexpr (Ty == OrderType::BUY)
+                return m1.sell_id == m2.sell_id;
+            else
+                return m1.buy_id == m2.buy_id;
+        };
+
         size_t new_end = 0;
         for (size_t idx = 1; idx < matches.size(); ++idx)
-            // Can perhaps be reduced into one if-else. I'm unsure if the compiler will optimize it in that case
-            if constexpr (Ty == OrderType::BUY) {
-                if (matches[idx].sell_id == matches[new_end].sell_id)
-                    matches[new_end].quantity += matches[idx].quantity;
-                else
-                    matches[++new_end] = matches[idx];
-            } else {
-                if (matches[idx].buy_id == matches[new_end].buy_id)
-                    matches[new_end].quantity += matches[idx].quantity;
-                else
-                    matches[++new_end] = matches[idx];
-            }
+            if (id_match(matches[idx], matches[new_end]))
+                matches[new_end].quantity += matches[idx].quantity;
+            else
+                matches[++new_end] = matches[idx];
 
         matches.resize(new_end + 1);
     }
