@@ -142,7 +142,6 @@ TEST_F(OrderBookFixture, ComplexExample1) {
     book.processOrder(std::unique_ptr<Order>(new Order(OrderType::BUY, 7, 100, 31)));
     OrderBookPrinter::print(book);
 
-    std::cerr << buffer.str();
     EXPECT_TRUE(buffer.str() == 
     "+-----------------------------------------------------------------+\n"
     "| BUY                            | SELL                           |\n"
@@ -185,9 +184,8 @@ TEST_F(OrderBookFixture, ComplexExample1) {
     "|          |             |       |    101|            5|         3|\n"
     "+-----------------------------------------------------------------+\n"
     "6,4,99,1\n"
-    "6,1,100,10\n"
+    "6,1,100,20\n"
     "6,2,100,10\n"
-    "6,1,100,10\n"
     "+-----------------------------------------------------------------+\n"
     "| BUY                            | SELL                           |\n"
     "| Id       | Volume      | Price | Price | Volume      | Id       |\n"
@@ -291,4 +289,75 @@ TEST_F(OrderBookFixture, ComplexExample2) {
     "|     82409|       25,500|     98|       |             |          |\n"
     "+-----------------------------------------------------------------+\n"
     );
+}
+
+TEST_F(OrderBookFixture, ComplexExample3) {
+    book.processOrder(std::unique_ptr<Order>(new IcebergOrder(OrderType::BUY, 82532, 100, 72500, 10000)));
+    book.processOrder(std::unique_ptr<Order>(new Order(OrderType::BUY, 82025, 99, 50000)));
+    book.processOrder(std::unique_ptr<Order>(new Order(OrderType::BUY, 82409, 98, 25500)));
+    book.processOrder(std::unique_ptr<Order>(new Order(OrderType::SELL, 81900, 101, 20000)));
+    OrderBookPrinter::print(book);
+
+    EXPECT_TRUE(buffer.str() ==
+    "+-----------------------------------------------------------------+\n"
+    "| BUY                            | SELL                           |\n"
+    "| Id       | Volume      | Price | Price | Volume      | Id       |\n"
+    "+----------+-------------+-------+-------+-------------+----------+\n"
+    "|     82532|       10,000|    100|    101|       20,000|     81900|\n"
+    "|     82025|       50,000|     99|       |             |          |\n"
+    "|     82409|       25,500|     98|       |             |          |\n"
+    "+-----------------------------------------------------------------+\n"
+    );
+    buffer.str("");
+
+    book.processOrder(std::unique_ptr<Order>(new Order(OrderType::SELL, 82612, 100, 11000)));
+    OrderBookPrinter::print(book);
+
+    EXPECT_TRUE(buffer.str() ==
+    "82532,82612,100,11000\n"
+    "+-----------------------------------------------------------------+\n"
+    "| BUY                            | SELL                           |\n"
+    "| Id       | Volume      | Price | Price | Volume      | Id       |\n"
+    "+----------+-------------+-------+-------+-------------+----------+\n"
+    "|     82532|        9,000|    100|    101|       20,000|     81900|\n"
+    "|     82025|       50,000|     99|       |             |          |\n"
+    "|     82409|       25,500|     98|       |             |          |\n"
+    "+-----------------------------------------------------------------+\n"
+    );
+    buffer.str("");
+
+    book.processOrder(std::unique_ptr<Order>(new IcebergOrder(OrderType::BUY, 82800, 100, 50000, 20000)));
+    OrderBookPrinter::print(book);
+
+    EXPECT_TRUE(buffer.str() ==
+    "+-----------------------------------------------------------------+\n"
+    "| BUY                            | SELL                           |\n"
+    "| Id       | Volume      | Price | Price | Volume      | Id       |\n"
+    "+----------+-------------+-------+-------+-------------+----------+\n"
+    "|     82532|        9,000|    100|    101|       20,000|     81900|\n"
+    "|     82800|       20,000|    100|       |             |          |\n"
+    "|     82025|       50,000|     99|       |             |          |\n"
+    "|     82409|       25,500|     98|       |             |          |\n"
+    "+-----------------------------------------------------------------+\n"
+    );
+    buffer.str("");
+
+
+    book.processOrder(std::unique_ptr<Order>(new Order(OrderType::SELL, 83000, 100, 35000)));
+    OrderBookPrinter::print(book);
+
+    EXPECT_TRUE(buffer.str() ==
+    "82532,83000,100,15000\n"
+    "82800,83000,100,20000\n"
+    "+-----------------------------------------------------------------+\n"
+    "| BUY                            | SELL                           |\n"
+    "| Id       | Volume      | Price | Price | Volume      | Id       |\n"
+    "+----------+-------------+-------+-------+-------------+----------+\n"
+    "|     82532|        4,000|    100|    101|       20,000|     81900|\n"
+    "|     82800|       20,000|    100|       |             |          |\n"
+    "|     82025|       50,000|     99|       |             |          |\n"
+    "|     82409|       25,500|     98|       |             |          |\n"
+    "+-----------------------------------------------------------------+\n"
+    );
+    buffer.str("");
 }

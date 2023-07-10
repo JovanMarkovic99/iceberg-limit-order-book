@@ -2,6 +2,7 @@
 #include "../include/OrderBook.hpp"
 #include <utility>
 #include <sstream>
+#include <unordered_map>
 
 namespace jvn
 {
@@ -50,7 +51,7 @@ namespace jvn
         // Exhausted match
         if (matching_order_volume <= order->quantity) {
             order->quantity -= matching_order_volume;
-            matching_order->quantity -= matching_order_volume;
+            matching_order->matchVolume(matching_order_volume);
 
             // Not-exhausted Iceberg-order
             if (matching_order->quantity)
@@ -68,7 +69,7 @@ namespace jvn
         }
 
         quantity_type old_order_quantity = std::exchange(order->quantity, 0);
-        matching_order->quantity -= old_order_quantity;
+        matching_order->matchVolume(old_order_quantity);
 
         match_iter->second.pushFront(std::move(matching_order));
 
@@ -83,21 +84,24 @@ namespace jvn
         if (!matches.size())
             return;
 
-        auto id_match = [](const Match& m1, const Match& m2) {
+        std::unordered_map<int, size_t> seen_match_indices;
+        auto id_match = [](const Match& m) {
             if constexpr (Ty == OrderType::BUY)
-                return m1.sell_id == m2.sell_id;
+                return m.sell_id;
             else
-                return m1.buy_id == m2.buy_id;
+                return m.buy_id;
         };
 
         size_t new_end = 0;
-        for (size_t idx = 1; idx < matches.size(); ++idx)
-            if (id_match(matches[idx], matches[new_end]))
-                matches[new_end].quantity += matches[idx].quantity;
+        for (size_t idx = 0; idx < matches.size(); ++idx) {
+            auto [iter, not_found] = seen_match_indices.emplace(id_match(matches[idx]), new_end);
+            if (not_found)
+                matches[new_end++] = matches[idx];
             else
-                matches[++new_end] = matches[idx];
+                matches[iter->second].quantity += matches[idx].quantity;
+        }
 
-        matches.resize(new_end + 1);
+        matches.resize(new_end);
     }
 
     template <class Map, class Iter>
