@@ -19,7 +19,6 @@ namespace jvn
         Order(OrderType order_type, int id, limit_type limit, quantity_type quantity);
         virtual ~Order() = default;
 
-        // Returns the current quantity or the peak_size, whichever is smaller
         [[nodiscard]] virtual quantity_type getVolume() const noexcept;
         virtual void matchVolume(quantity_type volume) noexcept;
     };

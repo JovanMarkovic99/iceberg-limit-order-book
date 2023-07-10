@@ -292,7 +292,7 @@ TEST_F(OrderBookFixture, ComplexExample2) {
 }
 
 TEST_F(OrderBookFixture, ComplexExample3) {
-    book.processOrder(std::unique_ptr<Order>(new IcebergOrder(OrderType::BUY, 82532, 100, 72500, 10000)));
+    book.processOrder(std::unique_ptr<Order>(new IcebergOrder(OrderType::BUY, 82532, 100, 82500, 10000)));
     book.processOrder(std::unique_ptr<Order>(new Order(OrderType::BUY, 82025, 99, 50000)));
     book.processOrder(std::unique_ptr<Order>(new Order(OrderType::BUY, 82409, 98, 25500)));
     book.processOrder(std::unique_ptr<Order>(new Order(OrderType::SELL, 81900, 101, 20000)));
