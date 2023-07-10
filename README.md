@@ -4,6 +4,34 @@
 
 This project implements a Limit Order Book with support for Iceberg Orders. The Order Book efficiently manages and matches buy and sell orders based on specified limits and quantities. The design aims to optimize time complexity and efficiency, providing fast insertion, and matching operations.
 
+## Building & Testing
+
+To build and run the project, follow these steps:
+
+1. Clone the repository to your local machine:
+    ``` 
+    git clone https://github.com/JovanMarkovic99/iceberg-limit-order-book 
+    ```
+
+2. Navigate to the project's root directory and create a build directory:
+    ``` 
+    cd your-repository
+    mkdir build
+    ```
+
+3. Build the project by running `cmake` in the build directory:
+    ```
+    cd build
+    cmake ..
+    cmake --build .
+    ```
+    The project should now be successfully built on your system.
+
+    4. (Optional) You can run any provided tests to ensure the project functions as expected:
+    ```
+    ctest
+    ```
+
 ## Order Design
 
 The Order Book supports two types of orders: `Order` and `IcebergOrder`.

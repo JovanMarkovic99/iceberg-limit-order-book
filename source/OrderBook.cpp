@@ -44,6 +44,7 @@ namespace jvn
     OrderBook::Match OrderBook::match(Order* order, Map& map, Iter& match_iter) {
         std::unique_ptr<Order> matching_order = match_iter->second.popFront();
         int matching_order_id = matching_order->id;
+        limit_type matching_order_limit = matching_order->limit;
         quantity_type matching_order_volume = matching_order->getVolume();
 
         // Exhausted match
@@ -62,7 +63,7 @@ namespace jvn
             if constexpr(std::is_same_v<Map, OrderBook::buy_map_type>)
                 return Match{matching_order_id, order->id, order->limit, matching_order_volume};
             else
-                return Match{order->id, matching_order_id, match_iter->first, matching_order_volume};
+                return Match{order->id, matching_order_id, matching_order_limit, matching_order_volume};
 
         }
 
@@ -74,7 +75,7 @@ namespace jvn
         if constexpr(std::is_same_v<Map, OrderBook::buy_map_type>)
             return Match{matching_order_id, order->id, order->limit, old_order_quantity};
         else
-            return Match{order->id, matching_order_id, match_iter->first, old_order_quantity};
+            return Match{order->id, matching_order_id, matching_order_limit, old_order_quantity};
     };
 
     template <OrderType Ty>
