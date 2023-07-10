@@ -27,7 +27,7 @@ To build and run the project, follow these steps:
     ```
     The project should now be successfully built on your system.
 
-    4. (Optional) You can run any provided tests to ensure the project functions as expected:
+4. (Optional) You can run any provided tests to ensure the project functions as expected:
     ```
     ctest
     ```
