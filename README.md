@@ -47,21 +47,26 @@ struct Order {
     quantity_type quantity;
 
     virtual quantity_type getVolume();
+    virtual void matchVolume(quantity_type volume);
     ...
 };
 ```
 
-- The `IcebergOrder` struct represents an Iceberg Order and includes an additional property:
+- The `IcebergOrder` struct represents an Iceberg Order and includes additional properties:
 
 ```cpp
 struct IcebergOrder : Order {
     quantity_type peak_size;
+    quantity_type current_peak_size;
 
     virtual quantity_type getVolume();
+    virtual void matchVolume(quantity_type volume);
     ...
 };
 ```
-The `getVolume()` function calculates the volume of the order. For `Order`, the volume is equal to its current quantity. For `IcebergOrder`, the volume is the minimum value between its peak size and its current full quantity.
+The `getVolume()` function calculates the volume of the order. For `Order`, the volume is equal to its current quantity. For `IcebergOrder`, the volume is the minimum value between its current peak size and its current full quantity.
+
+The `matchVolume(volume)` function removes a given volume from the order. For `Order`, it removes the volume from the quantity. For `IcebergOrder`, it removes both from the quantity and its current peak size, replenishing the peak if necessary.
 
 ## Book Design
 
