@@ -36,7 +36,6 @@ namespace jvn
 
         template <class Map, class Iter>
         [[nodiscard]] Match match(Order* order, Map& map, Iter& iter);
-        // Merges consecutive Icebergs (I'm assuming we wouldn't want to merge non-consecutive trades)
         template <OrderType Type>
         void mergeIcebergMatches(std::vector<Match>& matches) const;
 
