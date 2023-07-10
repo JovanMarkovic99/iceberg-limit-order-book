@@ -15,7 +15,7 @@ To build and run the project, follow these steps:
 
 2. Navigate to the project's root directory and create a build directory:
     ``` 
-    cd your-repository
+    cd iceberg-limit-order-book 
     mkdir build
     ```
 
@@ -26,11 +26,8 @@ To build and run the project, follow these steps:
     cmake --build .
     ```
     The project should now be successfully built on your system.
-
-4. (Optional) You can run any provided tests to ensure the project functions as expected:
-    ```
-    ctest
-    ```
+   
+5. Run the program `main.exe`.
 
 ## Order Design
 
