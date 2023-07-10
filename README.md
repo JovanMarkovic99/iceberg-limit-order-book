@@ -25,8 +25,12 @@ To build and run the project, follow these steps:
     cmake ..
     cmake --build .
     ```
-    The project should now be successfully built on your system.
-   
+
+4. (Optional) You can run any provided tests to ensure the project functions as expected:
+    ```
+    ctest -C Debug
+    ```
+
 5. Run the program `main.exe`.
 
 ## Order Design
