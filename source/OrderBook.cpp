@@ -56,13 +56,12 @@ namespace jvn
             // Not-exhausted Iceberg-order
             if (matching_order->quantity)
                 match_iter->second.pushBack(std::move(matching_order));
-
             // Exhausted Limit
-            if (match_iter->second.isEmpty())
+            else if (match_iter->second.isEmpty())
                 map.erase(std::exchange(match_iter, std::next(match_iter)));
 
             if constexpr(std::is_same_v<Map, OrderBook::buy_map_type>)
-                return Match{matching_order_id, order->id, order->limit, matching_order_volume};
+                return Match{matching_order_id, order->id, matching_order_limit, matching_order_volume};
             else
                 return Match{order->id, matching_order_id, matching_order_limit, matching_order_volume};
 
@@ -74,7 +73,7 @@ namespace jvn
         match_iter->second.pushFront(std::move(matching_order));
 
         if constexpr(std::is_same_v<Map, OrderBook::buy_map_type>)
-            return Match{matching_order_id, order->id, order->limit, old_order_quantity};
+            return Match{matching_order_id, order->id, matching_order_limit, old_order_quantity};
         else
             return Match{order->id, matching_order_id, matching_order_limit, old_order_quantity};
     };
